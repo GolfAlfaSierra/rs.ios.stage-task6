@@ -15,7 +15,7 @@ enum Suit: Int, CaseIterable, Codable {
     case diamonds
 }
 
-enum Value: Int, Codable {
+enum Value: Int, Codable, CaseIterable {
     case six
     case seven
     case eight
@@ -37,13 +37,28 @@ struct Card: CardBaseCompatible {
     }
 
     static func == (lhs: Self, rhs: Self) -> Bool {
-        return false
+        let one = (lhs.isTrump == rhs.isTrump)
+        let two = (lhs.value.rawValue == rhs.value.rawValue) && (lhs.suit.rawValue == rhs.suit.rawValue)
+        
+        return one && two
     }
 }
 
 extension Card {
 
     func checkIfCanBeat(card: Card) -> Bool {
+        if self.isTrump && card.isTrump {
+            return self.value.rawValue > card.value.rawValue
+        }
+        
+        if self.isTrump && !card.isTrump {
+            return true
+        }
+        
+        if (self.value.rawValue > card.value.rawValue) && (self.suit.rawValue == card.suit.rawValue){
+            return true
+        }
+        
         return false
     }
 
